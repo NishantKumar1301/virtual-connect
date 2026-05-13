@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}VirtualConnect — Online Conferences{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
+  <div class="container hero-content">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      Live Video Conferencing Platform
+    </div>
+    <h1 class="hero-title">
+      Connect, Collaborate &amp;<br>
+      <span class="gradient-text">Innovate Remotely</span>
+    </h1>
+    <p class="hero-subtitle">
+      VirtualConnect brings teams together with high-quality video conferencing,
+      real-time chat, screen sharing, and seamless conference scheduling — all in one place.
+    </p>
+    <div class="hero-actions">
+      {% if user.is_authenticated %}
+        <a href="{% url 'create_conference' %}" class="btn btn-primary btn-lg">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          Start Conference
+        </a>
+        <a href="{% url 'dashboard' %}" class="btn btn-outline btn-lg">Go to Dashboard</a>
+      {% else %}
+        <a href="{% url 'register' %}" class="btn btn-primary btn-lg">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Get Started Free
+        </a>
+        <a href="{% url 'login' %}" class="btn btn-outline btn-lg">Sign In</a>
+      {% endif %}
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-value">{{ total_conferences|default:"0" }}+</span>
+        <span class="stat-label">Conferences Hosted</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-value">HD</span>
+        <span class="stat-label">Video Quality</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-value">P2P</span>
+        <span class="stat-label">WebRTC Encrypted</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating UI preview -->
+  <div class="hero-preview">
+    <div class="preview-card">
+      <div class="preview-header">
+        <div class="preview-dots">
+          <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+        </div>
+        <span class="preview-title">Team Standup</span>
+        <span class="preview-live">● LIVE</span>
+      </div>
+      <div class="preview-grid">
+        <div class="preview-video active">
+          <div class="pv-avatar">AK</div>
+          <div class="pv-name">Alex K.</div>
+          <div class="pv-speaking"></div>
+        </div>
+        <div class="preview-video">
+          <div class="pv-avatar" style="background:#06b6d4">SR</div>
+          <div class="pv-name">Sam R.</div>
+        </div>
+        <div class="preview-video">
+          <div class="pv-avatar" style="background:#10b981">MJ</div>
+          <div class="pv-name">Mike J.</div>
+        </div>
+        <div class="preview-video you">
+          <div class="pv-avatar" style="background:#f59e0b">You</div>
+          <div class="pv-name">You</div>
+        </div>
+      </div>
+      <div class="preview-controls">
+        <div class="ctrl-btn active">🎤</div>
+        <div class="ctrl-btn">📹</div>
+        <div class="ctrl-btn">🖥️</div>
+        <div class="ctrl-btn leave">📞</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="features-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Everything you need to run great meetings</h2>
+      <p class="section-subtitle">Powerful features built for modern remote teams</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card" data-delay="0">
+        <div class="feature-icon" style="--icon-color:#7c3aed">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M15 10l4.553-2.277A1 1 0 0121 8.677V15.32a1 1 0 01-1.447.898L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>HD Video Conferencing</h3>
+        <p>Crystal-clear video calls powered by WebRTC — peer-to-peer encrypted, no server bottleneck.</p>
+      </div>
+      <div class="feature-card" data-delay="100">
+        <div class="feature-icon" style="--icon-color:#06b6d4">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Real-time Chat</h3>
+        <p>Send messages, links and notes during meetings with persistent chat history saved per conference.</p>
+      </div>
+      <div class="feature-card" data-delay="200">
+        <div class="feature-icon" style="--icon-color:#10b981">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Screen Sharing</h3>
+        <p>Share your screen instantly during any conference. Perfect for presentations and live demos.</p>
+      </div>
+      <div class="feature-card" data-delay="300">
+        <div class="feature-icon" style="--icon-color:#f59e0b">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Conference Scheduling</h3>
+        <p>Plan and schedule meetings in advance. Share room codes and let participants join at the right time.</p>
+      </div>
+      <div class="feature-card" data-delay="400">
+        <div class="feature-icon" style="--icon-color:#ef4444">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Password Protection</h3>
+        <p>Secure private meetings with password protection. Only invited participants can join.</p>
+      </div>
+      <div class="feature-card" data-delay="500">
+        <div class="feature-icon" style="--icon-color:#8b5cf6">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Participant Management</h3>
+        <p>See who's in the room, manage participants, and set up conferences for up to 50 attendees.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section class="how-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Up and running in 3 steps</h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-number">01</div>
+        <h3>Create an Account</h3>
+        <p>Sign up for free in seconds. No credit card required.</p>
+        <a href="{% url 'register' %}" class="step-link">Register now →</a>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step-card">
+        <div class="step-number">02</div>
+        <h3>Schedule or Start</h3>
+        <p>Create a new conference instantly or schedule one for later.</p>
+        <a href="{% url 'create_conference' %}" class="step-link">Create conference →</a>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step-card">
+        <div class="step-number">03</div>
+        <h3>Share &amp; Connect</h3>
+        <p>Share your room code with participants and start collaborating.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-card">
+      <div class="cta-orb"></div>
+      <h2>Ready to connect your team?</h2>
+      <p>Start your first conference for free today.</p>
+      <a href="{% url 'register' %}" class="btn btn-primary btn-lg">
+        Get Started — It's Free
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}

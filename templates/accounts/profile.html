@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block title %}Profile — VirtualConnect{% endblock %}
+
+{% block content %}
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">Your Profile</h1>
+    <p class="page-subtitle">Manage your account information</p>
+  </div>
+
+  <div class="profile-grid">
+    <div class="profile-sidebar">
+      <div class="profile-card">
+        <div class="profile-avatar-large">
+          {% if user.profile.avatar_url %}
+            <img src="{{ user.profile.avatar_url }}" alt="Avatar" class="avatar-img">
+          {% else %}
+            <div class="avatar-placeholder">{{ user.username|slice:":1"|upper }}</div>
+          {% endif %}
+        </div>
+        <div class="profile-name">{{ user.profile.display_name }}</div>
+        <div class="profile-username">@{{ user.username }}</div>
+        {% if user.profile.organization %}
+        <div class="profile-org">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0H5m-2 0h2m14-9h-5m5 4h-5M7 7h10M7 11h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          {{ user.profile.organization }}
+        </div>
+        {% endif %}
+        <div class="profile-stats-mini">
+          <div>
+            <strong>{{ user.hosted_conferences.count }}</strong>
+            <span>Hosted</span>
+          </div>
+          <div>
+            <strong>{{ user.conference_participations.count }}</strong>
+            <span>Joined</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-main">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Account Information</h2>
+        </div>
+        <form method="post" enctype="multipart/form-data" class="profile-form">
+          {% csrf_token %}
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              {{ u_form.first_name }}
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              {{ u_form.last_name }}
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            {{ u_form.email }}
+          </div>
+          <div class="form-group">
+            <label class="form-label">Organization</label>
+            {{ p_form.organization }}
+          </div>
+          <div class="form-group">
+            <label class="form-label">Bio</label>
+            {{ p_form.bio }}
+          </div>
+          <div class="form-group">
+            <label class="form-label">Profile Picture</label>
+            {{ p_form.avatar }}
+            {% if user.profile.avatar %}
+            <p class="form-hint">Current avatar uploaded. Upload a new one to replace it.</p>
+            {% endif %}
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a href="{% url 'dashboard' %}" class="btn btn-ghost">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

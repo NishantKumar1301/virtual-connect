@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% block title %}{{ conference.title }} — VirtualConnect{% endblock %}
+
+{% block content %}
+<div class="page-container page-narrow">
+  <div class="detail-back">
+    <a href="{% url 'dashboard' %}" class="back-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M19 12H5m0 0l7 7m-7-7l7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back to Dashboard
+    </a>
+  </div>
+
+  <div class="detail-card">
+    <div class="detail-header">
+      <div class="detail-badges">
+        <span class="conf-status {% if conference.is_active %}active{% else %}inactive{% endif %}">
+          {% if conference.is_active %}● Active{% else %}● Ended{% endif %}
+        </span>
+        {% if conference.is_password_protected %}
+        <span class="conf-badge lock">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Private
+        </span>
+        {% endif %}
+        {% if is_host %}
+        <span class="conf-badge host">Host</span>
+        {% endif %}
+      </div>
+      <h1 class="detail-title">{{ conference.title }}</h1>
+      {% if conference.description %}
+      <p class="detail-desc">{{ conference.description }}</p>
+      {% endif %}
+    </div>
+
+    <div class="detail-info-grid">
+      <div class="detail-info-item">
+        <div class="di-icon">📅</div>
+        <div>
+          <div class="di-label">Scheduled</div>
+          <div class="di-value">{{ conference.scheduled_at|date:"F d, Y" }} at {{ conference.scheduled_at|time:"H:i" }} UTC</div>
+        </div>
+      </div>
+      <div class="detail-info-item">
+        <div class="di-icon">👤</div>
+        <div>
+          <div class="di-label">Host</div>
+          <div class="di-value">{{ conference.host.get_full_name|default:conference.host.username }}</div>
+        </div>
+      </div>
+      <div class="detail-info-item">
+        <div class="di-icon">👥</div>
+        <div>
+          <div class="di-label">Participants</div>
+          <div class="di-value">{{ conference.participant_count }} / {{ conference.max_participants }}</div>
+        </div>
+      </div>
+      <div class="detail-info-item">
+        <div class="di-icon">🔑</div>
+        <div>
+          <div class="di-label">Room Code</div>
+          <div class="di-value room-code-display">
+            <code>{{ conference.room_code }}</code>
+            <button class="copy-btn" onclick="copyCode('{{ conference.room_code }}')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Copy
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Join / Enter section -->
+    <div class="detail-join-section">
+      <button class="btn btn-ghost" onclick="copyInviteLink()" style="margin-bottom:1rem">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Copy Invite Link
+      </button>
+    </div>
+    <div class="detail-join-section">
+      {% if conference.is_password_protected and not is_participant %}
+      <form method="post" action="{% url 'join_conference' conference.room_code %}">
+        {% csrf_token %}
+        <div class="join-password-form">
+          <input type="password" name="password" class="form-control" placeholder="Enter conference password" required>
+          <button type="submit" class="btn btn-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 10l4.553-2.277A1 1 0 0121 8.677V15.32a1 1 0 01-1.447.898L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Join Conference
+          </button>
+        </div>
+      </form>
+      {% else %}
+      <a href="{% url 'conference_room' conference.room_code %}" class="btn btn-primary btn-lg">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 10l4.553-2.277A1 1 0 0121 8.677V15.32a1 1 0 01-1.447.898L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Enter Conference Room
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function copyCode(code) {
+  navigator.clipboard.writeText(code).then(() => showToast('Room code copied!'));
+}
+function copyInviteLink() {
+  const url = window.location.origin + '/conferences/{{ conference.room_code }}/';
+  navigator.clipboard.writeText(url).then(() => showToast('Invite link copied! Share it with participants.'));
+}
+</script>
+{% endblock %}
