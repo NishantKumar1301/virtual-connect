@@ -116,9 +116,11 @@ LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
 
-# HTTPS security settings — active in production on Railway
+# Railway terminates SSL at proxy level — tell Django to trust X-Forwarded-Proto header
+# Do NOT set SECURE_SSL_REDIRECT=True on Railway (causes infinite redirect loop)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 if not DEBUG:
-    SECURE_SSL_REDIRECT = True
     SECURE_HSTS_SECONDS = 3600
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SESSION_COOKIE_SECURE = True
